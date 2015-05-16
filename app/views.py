@@ -1,9 +1,11 @@
-from flask import render_template, json, request, redirect, url_for
+from datetime import datetime
+from flask_json_multidict import get_json_multidict
+from flask import render_template, json, request, redirect, url_for, abort
 from flask.ext.login import login_user, logout_user, login_required, current_user
 from flask_limiter.util import get_ipaddr
 from app.models import User, Trade, db
 from app import app, limiter
-from .forms import UserForm
+from .forms import UserForm, TradeForm
 
 
 @app.route('/')
@@ -14,7 +16,7 @@ def index():
 
 
 @app.route('/login', methods=['GET', 'POST'])
-@limiter.limit("100/day;10/hour")
+@limiter.exempt
 def login():
     # If GET -> serve Login Template
     # Elif POST -> validate form, login user, redirect to /trade
@@ -37,13 +39,14 @@ def login():
 
 @app.route('/logout')
 @login_required
+@limiter.exempt
 def logout():
     logout_user()
     return redirect(url_for('login'))
 
 
 @app.route('/register', methods=['GET', 'POST'])
-@limiter.limit("100/day;10/hour")
+@limiter.exempt
 def register():
     # If GET -> serve Register Template
     # Elif POST -> validate form, try create user, login user, redirect to /trade
@@ -67,11 +70,20 @@ def register():
 @login_required
 @limiter.limit("200/day;20/hour", key_func=lambda: current_user.get_id() if current_user.is_authenticated() else get_ipaddr())
 def trade():
+    form = TradeForm(request.form)
     if request.method == 'POST':
-        if request.headers['Content-Type'] == 'application/json':
-            json_data = request.get_json()
-            return "JSON Message: " + str(json_data)
+        json_data = get_json_multidict(request)
+        # Ignore CRSF as it was not in the spec, ideally should be true
+        form = TradeForm(json_data, csrf_enabled=False)
+        if form.validate():
+            user = current_user
+            time = datetime.strptime(json_data['timePlaced'], '%d-%b-%y %H:%M:%S')
+            trade = Trade(json_data['userId'], json_data['currencyFrom'], json_data['currencyTo'], json_data['amountSell'], json_data['amountBuy'], json_data['rate'], time, json_data['originatingCountry'])
+            db.session.add(trade)
+            db.session.commit()
+            return "Trade %s was a success." % trade
         else:
-            return "415 Unsupported Media Type"
+            abort(415)
     else:
-        return render_template('trade.html')
+        trades = {}
+        return render_template('trade.html', form=form, trades=trades)

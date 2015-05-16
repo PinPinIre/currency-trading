@@ -40,7 +40,7 @@ class User(db.Model):
 
 
 class Trade(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     userId = db.Column(db.Integer, db.ForeignKey('user.id'))
     currencyFrom = db.Column(db.String)
     currencyTo = db.Column(db.String)
@@ -51,7 +51,6 @@ class Trade(db.Model):
     originatingCountry = db.Column(db.String)
 
     def __init__(self, user, cfrom, cto, sell, buy, rate, time, origin):
-        self.tradeId = db.Column(db.Integer, primary_key=True)
         self.userId = user
         self.currencyFrom = cfrom
         self.currencyTo = cto
@@ -60,3 +59,6 @@ class Trade(db.Model):
         self.rate = rate
         self.timePlaced = time
         self.originatingCountry = origin
+
+    def __str__(self):
+        return str(self.id)

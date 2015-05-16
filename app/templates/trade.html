@@ -1,4 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>This will be the trading page!</h1>
+    <h1>This is the trading page!</h1>
+    {% from "_formhelpers.html" import render_field %}
+    <form id="trade_form" method=post action="/">
+        {{ render_field(form.userId) }}
+        {{ render_field(form.currencyFrom) }}
+        {{ render_field(form.currencyTo) }}
+        {{ render_field(form.amountSell) }}
+        {{ render_field(form.amountBuy) }}
+        {{ render_field(form.rate) }}
+        {{ render_field(form.timePlaced) }}
+        {{ render_field(form.originatingCountry) }}
+        <button type="button" id="makeTrade">Trade</button>
+    </form>
+    <script src="{{ url_for('static', filename='js/trades.js') }}"></script>
 {% endblock %}
