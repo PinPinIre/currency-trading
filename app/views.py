@@ -1,18 +1,20 @@
 from flask import render_template, json, request, redirect, url_for
 from flask.ext.login import login_user, logout_user, login_required, current_user
+from flask_limiter.util import get_ipaddr
 from app.models import User, Trade, db
-from app import app
+from app import app, limiter
 from .forms import UserForm
-# TODO: Add rate limit decorator
 
 
 @app.route('/')
 @app.route('/index')
+@limiter.exempt
 def index():
     return render_template('index.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
+@limiter.limit("100/day;10/hour")
 def login():
     # If GET -> serve Login Template
     # Elif POST -> validate form, login user, redirect to /trade
@@ -41,6 +43,7 @@ def logout():
 
 
 @app.route('/register', methods=['GET', 'POST'])
+@limiter.limit("100/day;10/hour")
 def register():
     # If GET -> serve Register Template
     # Elif POST -> validate form, try create user, login user, redirect to /trade
@@ -62,6 +65,7 @@ def register():
 
 @app.route('/trade', methods=['GET', 'POST'])
 @login_required
+@limiter.limit("200/day;20/hour", key_func=lambda: current_user.get_id() if current_user.is_authenticated() else get_ipaddr())
 def trade():
     if request.method == 'POST':
         if request.headers['Content-Type'] == 'application/json':

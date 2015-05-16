@@ -1,7 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.hybrid import hybrid_property
-from app import app
-from . import bcrypt
+from app import app, bcrypt
 
 db = SQLAlchemy(app)
 
