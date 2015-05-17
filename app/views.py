@@ -68,8 +68,7 @@ def register():
 
 
 @app.route('/trade', methods=['GET', 'POST'])
-@login_required
-@limiter.limit("200/day;20/hour", key_func=lambda: current_user.get_id() if current_user.is_authenticated() else get_ipaddr())
+@limiter.limit("200/day;20/hour")
 def trade():
     form = TradeForm(request.form)
     if request.method == 'POST':
@@ -77,7 +76,10 @@ def trade():
         # Ignore CRSF as it was not in the spec, ideally should be true
         form = TradeForm(json_data, csrf_enabled=False)
         if form.validate():
-            user = current_user.get_id()
+            if current_user.is_authenticated():
+                user = current_user.get_id()
+            else:
+                user = json_data['userId']
             time = datetime.strptime(json_data['timePlaced'], '%d-%b-%y %H:%M:%S')
             trade = Trade(user, json_data['currencyFrom'], json_data['currencyTo'], json_data['amountSell'], json_data['amountBuy'], json_data['rate'], time, json_data['originatingCountry'])
             db.session.add(trade)

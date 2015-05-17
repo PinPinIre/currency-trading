@@ -1,6 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
     {% from "_formhelpers.html" import render_field %}
+    <div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Trade Request</h4>
+          </div>
+          <div class="modal-body">
+            <p id="requestMessage">Making request</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
     <div class="container">
         <form id="trade_form" method=post action="/">
             <h2>This is the trading page!</h2>
