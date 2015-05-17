@@ -57,6 +57,7 @@ def register():
         if form.validate():
             user = User(form.username.data, form.password.data)
             db.session.add(user)
+            # TODO: Handle integrity constraint here
             db.session.commit()
             login_user(user)
             return redirect(url_for('trade'))
@@ -76,10 +77,11 @@ def trade():
         # Ignore CRSF as it was not in the spec, ideally should be true
         form = TradeForm(json_data, csrf_enabled=False)
         if form.validate():
-            user = current_user
+            user = current_user.get_id()
             time = datetime.strptime(json_data['timePlaced'], '%d-%b-%y %H:%M:%S')
-            trade = Trade(json_data['userId'], json_data['currencyFrom'], json_data['currencyTo'], json_data['amountSell'], json_data['amountBuy'], json_data['rate'], time, json_data['originatingCountry'])
+            trade = Trade(user, json_data['currencyFrom'], json_data['currencyTo'], json_data['amountSell'], json_data['amountBuy'], json_data['rate'], time, json_data['originatingCountry'])
             db.session.add(trade)
+            # TODO: Handle integrity constraint here, sqlite doesn't enforce fk
             db.session.commit()
             return "Trade %s was a success." % trade
         else:
