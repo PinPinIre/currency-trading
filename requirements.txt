@@ -12,6 +12,7 @@ itsdangerous==0.24
 Jinja2==2.7.3
 limits==1.0.6
 MarkupSafe==0.23
+psycopg2==2.6
 python-bcrypt==0.3.1
 redis==2.10.3
 six==1.9.0
