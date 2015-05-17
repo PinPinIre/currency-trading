@@ -2,7 +2,6 @@ from datetime import datetime
 from flask_json_multidict import get_json_multidict
 from flask import render_template, json, request, redirect, url_for, abort
 from flask.ext.login import login_user, logout_user, login_required, current_user
-from flask_limiter.util import get_ipaddr
 from app.models import User, Trade, db
 from app import app, limiter
 from .forms import UserForm, TradeForm
@@ -87,6 +86,7 @@ def trade():
             db.session.commit()
             return "Trade %s was a success." % trade
         else:
+            # Data failed to validate
             abort(422)
     else:
         trades = Trade.query.all()
