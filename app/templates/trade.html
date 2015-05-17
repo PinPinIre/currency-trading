@@ -1,31 +1,48 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>This is the trading page!</h1>
     {% from "_formhelpers.html" import render_field %}
-    <form id="trade_form" method=post action="/">
-        {{ render_field(form.userId) }}
-        {{ render_field(form.currencyFrom) }}
-        {{ render_field(form.currencyTo) }}
-        {{ render_field(form.amountSell) }}
-        {{ render_field(form.amountBuy) }}
-        {{ render_field(form.rate) }}
-        {{ render_field(form.timePlaced) }}
-        {{ render_field(form.originatingCountry) }}
-        <button type="button" id="makeTrade">Trade</button>
-    </form>
-    <ul>
-        {% for trade in trades %}
-        <li>| {{ trade.id }} | {{ trade.userId }} | {{ trade.currencyFrom }} | {{ trade.currencyTo }} | {{ trade.amountSell }} | {{ trade.amountBuy }} | {{ trade.rate }} | {{ trade.timePlaced }} | {{ trade.originatingCountry }} |</li>
-        {% endfor %}
-    </ul>
+    <div class="container">
+        <form id="trade_form" method=post action="/">
+            <h2>This is the trading page!</h2>
+            {{ render_field(form.userId) }}
+            {{ render_field(form.currencyFrom) }}
+            {{ render_field(form.currencyTo) }}
+            {{ render_field(form.amountSell) }}
+            {{ render_field(form.amountBuy) }}
+            {{ render_field(form.rate) }}
+            {{ render_field(form.timePlaced) }}
+            {{ render_field(form.originatingCountry) }}
+            <button type="button" id="makeTrade">Trade</button>
+        </form>
+    </div>
+    <div class="container">
+        <table class="table table-striped">
+            <thead><tr>
+                <th>Trade ID</th>
+                <th>User ID</th>
+                <th>Currency From</th>
+                <th>Currency To</th>
+                <th>Amount Sell</th>
+                <th>Amount Buy</th>
+                <th>Rate</th>
+                <th>Origination Country</th>
+            </tr></thead>
+            <tbody>
+                {% for trade in trades %}
+                    <tr>
+                        <th>{{ trade.id }}</th>
+                        <th>{{ trade.userId }}</th>
+                        <th>{{ trade.currencyFrom }}</th>
+                        <th>{{ trade.currencyTo }}</th>
+                        <th>{{ trade.amountSell }}</th>
+                        <th>{{ trade.amountBuy }}</th>
+                        <th>{{ trade.rate }}</th>
+                        <th>{{ trade.timePlaced }}</th>
+                        <th>{{ trade.originatingCountry }}</th>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     <script src="{{ url_for('static', filename='js/trades.js') }}"></script>
 {% endblock %}
-
-self.userId = user
-self.currencyFrom = cfrom
-self.currencyTo = cto
-self.amountSell = sell
-self.amountBuy = buy
-self.rate = rate
-self.timePlaced = time
-self.originatingCountry = origin

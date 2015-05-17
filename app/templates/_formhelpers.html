@@ -1,6 +1,7 @@
 {% macro render_field(field) %}
-    {{ field.label }}
-    {{ field(**kwargs)|safe }}
+    {{ field.label(class_="sr-only")}}
+    {% set placeholder = field.label.text %}
+    {{ field(class_="form-control", placeholder=placeholder, **kwargs)|safe }}
   {% if field.errors %}
     <ul class=errors>
     {% for error in field.errors %}
