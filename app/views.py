@@ -87,7 +87,7 @@ def trade():
             db.session.commit()
             return "Trade %s was a success." % trade
         else:
-            abort(415)
+            abort(422)
     else:
         trades = Trade.query.all()
         return render_template('trade.html', form=form, trades=trades)
