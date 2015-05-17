@@ -13,5 +13,19 @@
         {{ render_field(form.originatingCountry) }}
         <button type="button" id="makeTrade">Trade</button>
     </form>
+    <ul>
+        {% for trade in trades %}
+        <li>| {{ trade.id }} | {{ trade.userId }} | {{ trade.currencyFrom }} | {{ trade.currencyTo }} | {{ trade.amountSell }} | {{ trade.amountBuy }} | {{ trade.rate }} | {{ trade.timePlaced }} | {{ trade.originatingCountry }} |</li>
+        {% endfor %}
+    </ul>
     <script src="{{ url_for('static', filename='js/trades.js') }}"></script>
 {% endblock %}
+
+self.userId = user
+self.currencyFrom = cfrom
+self.currencyTo = cto
+self.amountSell = sell
+self.amountBuy = buy
+self.rate = rate
+self.timePlaced = time
+self.originatingCountry = origin

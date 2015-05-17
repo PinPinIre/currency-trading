@@ -85,5 +85,5 @@ def trade():
         else:
             abort(415)
     else:
-        trades = {}
+        trades = Trade.query.all()
         return render_template('trade.html', form=form, trades=trades)
